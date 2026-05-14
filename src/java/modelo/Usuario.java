@@ -19,12 +19,12 @@ public class Usuario {
     private String telefono;
     private String direccion;
     private Date fechaRegistro;
-    private int idRol;
+    private Rol rol;
 
     public Usuario() {
     }
 
-    public Usuario(int idUsuario, String nombre, String apellido, String correo, String pass, String telefono, String direccion, Date fechaRegistro, int idRol) {
+    public Usuario(int idUsuario, String nombre, String apellido, String correo, String pass, String telefono, String direccion, Date fechaRegistro, Rol rol) {
         this.idUsuario = idUsuario;
         this.nombre = nombre;
         this.apellido = apellido;
@@ -33,7 +33,7 @@ public class Usuario {
         this.telefono = telefono;
         this.direccion = direccion;
         this.fechaRegistro = fechaRegistro;
-        this.idRol = idRol;
+        this.rol = rol;
     }
 
     public int getIdUsuario() {
@@ -100,14 +100,11 @@ public class Usuario {
         this.fechaRegistro = fechaRegistro;
     }
 
-    public int getIdRol() {
-        return idRol;
+    public Rol getRol() {
+        return rol;
     }
 
-    public void setIdRol(int idRol) {
-        this.idRol = idRol;
+    public void setRol(Rol rol) {
+        this.rol = rol;
     }
-    
-    
-    
 }
