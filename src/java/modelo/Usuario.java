@@ -5,6 +5,12 @@
 package modelo;
 
 import java.util.Date;
+import java.sql.Connection;
+import java.sql.Statement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.logging.Logger;
+import java.util.logging.Level;
 
 /**
  *
@@ -106,5 +112,44 @@ public class Usuario {
 
     public void setRol(Rol rol) {
         this.rol = rol;
+    }
+    
+    public Usuario login(String correo, String password){
+        String consulta;
+        ConexionBDD conexion = new ConexionBDD();
+        Usuario usuario = new Usuario();
+        
+        consulta = "SELECT u.*, r.nombre_rol " +
+           "FROM usuarios u " +
+           "INNER JOIN roles r ON u.id_rol = r.id_rol " +
+           "WHERE correo = '" + correo + "' " +
+           "AND pass = '" + password + "'";
+        System.out.println(consulta);
+        Connection con = conexion.conectar();
+        try {
+            Statement cn = con.createStatement();
+            try {
+                ResultSet rs = cn.executeQuery(consulta);
+                while(rs.next()){
+                    usuario.setIdUsuario(rs.getInt("id_usuario"));
+                    usuario.setNombre(rs.getString("nombre"));
+                    usuario.setApellido(rs.getString("apellido"));
+                    usuario.setCorreo(rs.getString("correo"));
+                    usuario.setPass(rs.getString("pass"));
+                    usuario.setTelefono(rs.getString("telefono"));
+                    usuario.setDireccion(rs.getString("direccion"));
+                    usuario.setFechaRegistro(rs.getDate("fecha_registro"));
+                    Rol rol = new Rol();
+                    rol.setIdRol(rs.getInt("id_rol"));
+                    rol.setNombreRol(rs.getString("nombre_rol"));
+                    usuario.setRol(rol);
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(Usuario.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Usuario.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
 }

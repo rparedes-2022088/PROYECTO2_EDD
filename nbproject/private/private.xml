@@ -3,12 +3,9 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/chris/OneDrive%20-%20Universidad%20Rafael%20Landivar/URL/3er%20Semestre/Estructura%20de%20Datos/PROYECTO2_EDD/PROYECTO2_EDD/web/login.jsp</file>
-            <file>file:/C:/Users/chris/OneDrive%20-%20Universidad%20Rafael%20Landivar/URL/3er%20Semestre/Estructura%20de%20Datos/PROYECTO2_EDD/PROYECTO2_EDD/src/java/controlador/ControladorRol.java</file>
-            <file>file:/C:/Users/chris/OneDrive%20-%20Universidad%20Rafael%20Landivar/URL/3er%20Semestre/Estructura%20de%20Datos/PROYECTO2_EDD/PROYECTO2_EDD/web/registro.jsp</file>
-            <file>file:/C:/Users/chris/OneDrive%20-%20Universidad%20Rafael%20Landivar/URL/3er%20Semestre/Estructura%20de%20Datos/PROYECTO2_EDD/PROYECTO2_EDD/src/java/controlador/ControladorUsuario.java</file>
-            <file>file:/C:/Users/chris/OneDrive%20-%20Universidad%20Rafael%20Landivar/URL/3er%20Semestre/Estructura%20de%20Datos/PROYECTO2_EDD/PROYECTO2_EDD/src/java/controlador/ControladorLogin.java</file>
-            <file>file:/C:/Users/chris/OneDrive%20-%20Universidad%20Rafael%20Landivar/URL/3er%20Semestre/Estructura%20de%20Datos/PROYECTO2_EDD/PROYECTO2_EDD/web/WEB-INF/web.xml</file>
+            <file>file:/C:/Users/ruben/OneDrive/Documentos/NetBeansProjects/PROYECTO2_EDD/src/java/controlador/ControladorLogin.java</file>
+            <file>file:/C:/Users/ruben/OneDrive/Documentos/NetBeansProjects/PROYECTO2_EDD/src/java/modelo/NodoUsuario.java</file>
+            <file>file:/C:/Users/ruben/OneDrive/Documentos/NetBeansProjects/PROYECTO2_EDD/src/java/modelo/Usuario.java</file>
         </group>
     </open-files>
 </project-private>
