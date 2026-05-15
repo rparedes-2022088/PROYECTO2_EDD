@@ -4,7 +4,12 @@
  */
 package modelo;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -15,19 +20,21 @@ public class Pedidos {
     private String descripcion;
     private String direccionEntrega;
     private Date fechaPedido;
-    private String estado;
+    private String estado; //SIN = sin asignar, ASIGNADO = asignado, ENTREGADO = entregado
     private String prioridad;
+    private Usuario cliente;
 
     public Pedidos() {
     }
 
-    public Pedidos(int id, String descripcion, String direccionEntrega, Date fechaPedido, String estado, String prioridad) {
+    public Pedidos(int id, String descripcion, String direccionEntrega, Date fechaPedido, String estado, String prioridad, Usuario cliente) {
         this.id = id;
         this.descripcion = descripcion;
         this.direccionEntrega = direccionEntrega;
         this.fechaPedido = fechaPedido;
         this.estado = estado;
         this.prioridad = prioridad;
+        this.cliente = cliente;
     }
 
     public int getId() {
@@ -77,6 +84,77 @@ public class Pedidos {
     public void setPrioridad(String prioridad) {
         this.prioridad = prioridad;
     }
+
+    public Usuario getCliente() {
+        return cliente;
+    }
+
+    public void setCliente(Usuario cliente) {
+        this.cliente = cliente;
+    }
     
+    public void nuevoPedido(Pedidos pedido){
+        String consulta;
+        ConexionBDD conexion = new ConexionBDD();
+        consulta = "insert into pedidos(descripcion, direccion_entrega, fecha_pedido, estado, prioridad, id_cliente)"
+                + " values('" + pedido.getDescripcion() + "', '"
+                + pedido.getDireccionEntrega() + "', "
+                + pedido.getFechaPedido() + ", "
+                + pedido.getEstado() + ", "
+                + pedido.getPrioridad() + ", "
+                + pedido.getCliente().getIdUsuario() + ")";
+        System.out.println(consulta);
+        Connection con = conexion.conectar();
+        try {
+            Statement cn = con.createStatement();
+            int filas = cn.executeUpdate(consulta);
+            if(filas > 0){
+                System.out.println("Pedido agregado exitosamente");
+            } else {
+                System.out.println("Pedido no agregado");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Usuario.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
     
+    //Admins
+    public void asignarRepartidor(int idPedido, int idRepartidor){
+        String consulta;
+        ConexionBDD conexion = new ConexionBDD();
+        consulta = "update pedidos set estado = 'ASIGNADO' id_repartidor = " + idRepartidor
+                + " where id_pedido = " + idPedido;
+        System.out.println(consulta);
+        Connection con = conexion.conectar();
+        try {
+            Statement cn = con.createStatement();
+            int filas = cn.executeUpdate(consulta);
+            if(filas > 0){
+                System.out.println("Repartidor asignado exitosamente");
+            } else {
+                System.out.println("Repartidor no asignado");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Usuario.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public void marcarEntrega(int idPedido){
+        String consulta;
+        ConexionBDD conexion = new ConexionBDD();
+        consulta = "update pedidos set estado = 'ENTREGADO' where id_pedido = " + idPedido;
+        System.out.println(consulta);
+        Connection con = conexion.conectar();
+        try {
+            Statement cn = con.createStatement();
+            int filas = cn.executeUpdate(consulta);
+            if(filas > 0){
+                System.out.println("Entregado exitosamente");
+            } else {
+                System.out.println("No marcado como entregado");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Usuario.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 }

@@ -152,4 +152,31 @@ public class Usuario {
         }
         return null;
     }
+    
+    public void registrarUsuario(Usuario usuario){
+        String consulta;
+        ConexionBDD conexion = new ConexionBDD();
+        consulta = "insert into usuarios(nombre, apellido, correo, pass, telefono, direccion, fecha_registro, id_rol)"
+                + " values('" + usuario.getNombre() + "', '"
+                + usuario.getApellido() + "', "
+                + usuario.getCorreo() + ", "
+                + usuario.getPass() + ", "
+                + usuario.getTelefono() + ", "
+                + usuario.getDireccion() + ", "
+                + usuario.getFechaRegistro() + ", "
+                + usuario.getRol().getIdRol() + ")";
+        System.out.println(consulta);
+        Connection con = conexion.conectar();
+        try {
+            Statement cn = con.createStatement();
+            int filas = cn.executeUpdate(consulta);
+            if(filas > 0){
+                System.out.println("Usuario agregado exitosamente");
+            } else {
+                System.out.println("Usuario no agregado");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Usuario.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 }

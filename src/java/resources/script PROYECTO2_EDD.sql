@@ -17,16 +17,6 @@ BEGIN
 END;
 /
 
-SHOW ERRORS TRIGGER trg_roles;
-
-SELECT trigger_name, status
-FROM user_triggers
-WHERE trigger_name = 'TRG_ROLES';
-
-SELECT object_name, status
-FROM user_objects
-WHERE object_name = 'TRG_ROLES';
-
 CREATE TABLE usuarios (
     id_usuario NUMBER PRIMARY KEY,
     nombre VARCHAR2(100) NOT NULL,
