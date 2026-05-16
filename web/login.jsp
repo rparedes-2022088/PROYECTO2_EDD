@@ -11,6 +11,11 @@
     <div class="container">
 
         <h2>Iniciar Sesión</h2>
+        
+        <%-- Validar si el servlet nos mandó de regreso por datos incorrectos --%>
+    <% if(request.getParameter("error") != null) { %>
+        <p style="color: red;">Usuario o contraseña incorrectos.</p>
+    <% } %>
 
         <form action="LoginServlet" method="post">
 

@@ -11,7 +11,6 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 
 /**
  *
@@ -26,36 +25,30 @@ public class ControladorLogin extends HttpServlet {
             throws ServletException, IOException {
 
         String usuario = request.getParameter("usuario");
-        String password = request.getParameter("password");
+        String pass = request.getParameter("password");
 
-        HttpSession sesion = request.getSession();
-
-        if (usuario.equals("admin") && password.equals("123")) {
-
-            sesion.setAttribute("usuario", usuario);
-            sesion.setAttribute("rol", "admin");
-
-            response.sendRedirect("adminInicio.jsp");
-
-        } else if (usuario.equals("cliente") && password.equals("123")) {
-
-            sesion.setAttribute("usuario", usuario);
-            sesion.setAttribute("rol", "cliente");
-
-            response.sendRedirect("clientesInicio.jsp");
-
-        } else if (usuario.equals("repartidor") && password.equals("123")) {
-
-            sesion.setAttribute("usuario", usuario);
-            sesion.setAttribute("rol", "repartidor");
-
-            response.sendRedirect("repartidorInicio.jsp");
-
-        } else {
-
-            response.sendRedirect("login.jsp");
-
+        Usuario usuarioManejador = new Usuario();
+        Usuario usuarioLogueado = usuarioManejador.login(usuario, pass);
+        
+        if(usuarioLogueado != null){
+            
+            request.getSession().setAttribute("usuarioSesion", usuarioLogueado);
+            
+            String rol = usuarioLogueado.getRol().getNombreRol();
+            if(rol.equalsIgnoreCase("administrador")){
+                response.sendRedirect("adminInicio.jsp");
+            }
+            else if(rol.equalsIgnoreCase("repartidor")){
+                response.sendRedirect("repartidorInicio.jsp");
+            }
+            else{
+                response.sendRedirect("clientesInicio.jsp");
+            }
         }
+        else{
+            response.sendRedirect("login.jsp?error=invalid");
+        }
+        
 
     }
     

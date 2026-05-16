@@ -128,29 +128,28 @@ public class Usuario {
         Connection con = conexion.conectar();
         try {
             Statement cn = con.createStatement();
-            try {
-                ResultSet rs = cn.executeQuery(consulta);
-                while(rs.next()){
-                    usuario.setIdUsuario(rs.getInt("id_usuario"));
-                    usuario.setNombre(rs.getString("nombre"));
-                    usuario.setApellido(rs.getString("apellido"));
-                    usuario.setCorreo(rs.getString("correo"));
-                    usuario.setPass(rs.getString("pass"));
-                    usuario.setTelefono(rs.getString("telefono"));
-                    usuario.setDireccion(rs.getString("direccion"));
-                    usuario.setFechaRegistro(rs.getDate("fecha_registro"));
-                    Rol rol = new Rol();
-                    rol.setIdRol(rs.getInt("id_rol"));
-                    rol.setNombreRol(rs.getString("nombre_rol"));
-                    usuario.setRol(rol);
-                }
-            } catch (SQLException ex) {
-                Logger.getLogger(Usuario.class.getName()).log(Level.SEVERE, null, ex);
+            ResultSet rs = cn.executeQuery(consulta);
+            
+            if(rs.next()){
+                usuario = new Usuario();
+                usuario.setIdUsuario(rs.getInt("id_usuario"));
+                usuario.setNombre(rs.getString("nombre"));
+                usuario.setApellido(rs.getString("apellido"));
+                usuario.setCorreo(rs.getString("correo"));
+                usuario.setPass(rs.getString("pass"));
+                usuario.setTelefono(rs.getString("telefono"));
+                usuario.setDireccion(rs.getString("direccion"));
+                usuario.setFechaRegistro(rs.getDate("fecha_registro"));
+                
+                Rol rol = new Rol();
+                rol.setIdRol(rs.getInt("id_rol"));
+                rol.setNombreRol(rs.getString("nombre_rol"));
+                usuario.setRol(rol);
             }
         } catch (SQLException ex) {
             Logger.getLogger(Usuario.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return null;
+        return usuario; //Devuelve el usuario lleno o null si no existe
     }
     
     public void registrarUsuario(Usuario usuario){
