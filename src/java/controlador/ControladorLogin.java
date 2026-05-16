@@ -11,6 +11,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import modelo.Usuario;
+
 
 /**
  *
@@ -24,11 +26,11 @@ public class ControladorLogin extends HttpServlet {
             HttpServletResponse response)
             throws ServletException, IOException {
 
-        String usuario = request.getParameter("usuario");
+        String correo = request.getParameter("correo");
         String pass = request.getParameter("password");
 
         Usuario usuarioManejador = new Usuario();
-        Usuario usuarioLogueado = usuarioManejador.login(usuario, pass);
+        Usuario usuarioLogueado = usuarioManejador.login(correo, pass);
         
         if(usuarioLogueado != null){
             

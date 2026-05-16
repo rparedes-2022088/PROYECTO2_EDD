@@ -12,15 +12,21 @@
 
         <h2>Iniciar Sesión</h2>
         
+        <% if(request.getParameter("registro") != null) { %>
+        <div style="background-color: #d4edda; color: #155724; padding: 10px; border-radius: 5px; margin-bottom: 15px;">
+            Usuario registrado
+        </div>
+    <% } %>
+        
         <%-- Validar si el servlet nos mandó de regreso por datos incorrectos --%>
     <% if(request.getParameter("error") != null) { %>
         <p style="color: red;">Usuario o contraseña incorrectos.</p>
     <% } %>
 
-        <form action="LoginServlet" method="post">
+        <form action="ControladorLogin" method="post">
 
-            <label>Usuario</label>
-            <input type="text" name="usuario" required>
+            <label>Correo</label>
+            <input type="text" name="correo" required>
 
             <label>Contraseña</label>
             <input type="password" name="password" required>

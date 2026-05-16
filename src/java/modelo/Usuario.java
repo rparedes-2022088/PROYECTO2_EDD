@@ -152,30 +152,40 @@ public class Usuario {
         return usuario; //Devuelve el usuario lleno o null si no existe
     }
     
-    public void registrarUsuario(Usuario usuario){
+    public boolean registrarUsuario(Usuario usuario){
         String consulta;
         ConexionBDD conexion = new ConexionBDD();
-        consulta = "insert into usuarios(nombre, apellido, correo, pass, telefono, direccion, fecha_registro, id_rol)"
-                + " values('" + usuario.getNombre() + "', '"
-                + usuario.getApellido() + "', "
-                + usuario.getCorreo() + ", "
-                + usuario.getPass() + ", "
-                + usuario.getTelefono() + ", "
-                + usuario.getDireccion() + ", "
-                + usuario.getFechaRegistro() + ", "
+        boolean exito = false; //valiable para avisarle al servlet
+        
+        consulta = "INSERT INTO usuarios(nombre, apellido, correo, pass, telefono, direccion, fecha_registro, id_rol)"
+                + " VALUES('" + usuario.getNombre() + "', '"
+                + usuario.getApellido() + "', '"
+                + usuario.getCorreo() + "', '"
+                + usuario.getPass() + "', '"
+                + usuario.getTelefono() + "', '"
+                + usuario.getDireccion() + "', '"
+                + "SYDATE, "
                 + usuario.getRol().getIdRol() + ")";
+        
         System.out.println(consulta);
+        
         Connection con = conexion.conectar();
         try {
             Statement cn = con.createStatement();
             int filas = cn.executeUpdate(consulta);
             if(filas > 0){
                 System.out.println("Usuario agregado exitosamente");
+                exito = true;
             } else {
                 System.out.println("Usuario no agregado");
             }
         } catch (SQLException ex) {
             Logger.getLogger(Usuario.class.getName()).log(Level.SEVERE, null, ex);
+        }finally{
+            //esto cierra la conexión para que Oracle no se sature 
+            try{ if(con != null) con.close();} catch(SQLException e){}
         }
+        
+        return exito;
     }
 }

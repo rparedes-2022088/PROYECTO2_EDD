@@ -11,6 +11,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import modelo.Usuario;
 
 /**
  *
@@ -72,16 +73,33 @@ public class ControladorRegistro extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String nombre = request.getParameter("nombre");
-        String usuario = request.getParameter("usuario");
-        String password = request.getParameter("password");
+        String apellido = request.getParameter("apellido");
+        String correo = request.getParameter("correo");
+        String password = request.getParameter("password"); //En la bd aún no hay donde guardar la contraseña
         String direccion = request.getParameter("direccion");
         String telefono = request.getParameter("telefono");
 
-        // Aquí luego guardarás en la BD
+        Usuario nuevo = new Usuario();
+        nuevo.setNombre(nombre);
+        nuevo.setApellido(apellido);
+        nuevo.setCorreo(correo);
+        nuevo.setPass(password);
+        nuevo.setTelefono(telefono);
+        nuevo.setDireccion(direccion);
+        
+        Usuario usuarioManejador = new Usuario();
+        boolean guardado = usuarioManejador.registrarUsuario(nuevo);
+        
+        if(guardado){
+            response.sendRedirect("login.jsp?registro=ok");
+        }
+        else{
+            response.sendRedirect("registro.jsp?error=bd");
+        }
 
         System.out.println("Usuario registrado:");
         System.out.println(nombre);
-        System.out.println(usuario);
+        System.out.println(correo);
 
         response.sendRedirect("login.jsp");
     }
