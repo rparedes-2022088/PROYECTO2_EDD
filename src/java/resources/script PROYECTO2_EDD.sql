@@ -43,6 +43,8 @@ FOR EACH ROW
 BEGIN
     :NEW.id_usuario := seq_usuarios.NEXTVAL;
 END;
+/
+
 
 CREATE TABLE pedidos (
     id_pedido NUMBER PRIMARY KEY,
@@ -63,6 +65,19 @@ CREATE TABLE pedidos (
         FOREIGN KEY (id_repartidor)
         REFERENCES usuarios(id_usuario)
 );
+
+CREATE SEQUENCE seq_pedidos
+START WITH 1
+INCREMENT BY 1;
+
+CREATE OR REPLACE TRIGGER trg_pedidos
+BEFORE INSERT ON pedidos
+FOR EACH ROW
+BEGIN
+    :NEW.id_pedido := seq_pedidos.NEXTVAL;
+END;
+/
+
 
 CREATE TABLE arbol_binario (
     id_nodo NUMBER PRIMARY KEY,

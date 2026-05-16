@@ -7,7 +7,10 @@ package modelo;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -23,6 +26,7 @@ public class Pedidos {
     private String estado; //SIN = sin asignar, ASIGNADO = asignado, ENTREGADO = entregado
     private String prioridad;
     private Usuario cliente;
+    private Usuario repartidor;
 
     public Pedidos() {
     }
@@ -92,6 +96,14 @@ public class Pedidos {
     public void setCliente(Usuario cliente) {
         this.cliente = cliente;
     }
+
+    public Usuario getRepartidor() {
+        return repartidor;
+    }
+
+    public void setRepartidor(Usuario repartidor) {
+        this.repartidor = repartidor;
+    }
     
     public void nuevoPedido(Pedidos pedido){
         String consulta;
@@ -156,5 +168,39 @@ public class Pedidos {
         } catch (SQLException ex) {
             Logger.getLogger(Usuario.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    //Admin
+    public List<Pedidos> verPedidos(){
+        String consulta;
+        ConexionBDD conexion = new ConexionBDD();
+        
+        consulta = "select * from pedidos";
+        System.out.println(consulta);
+        Connection con = conexion.conectar();
+        try {
+            List<Pedidos> pedidos = new ArrayList();
+            Statement cn = con.createStatement();
+            try {
+                ResultSet rs = cn.executeQuery(consulta);
+                while(rs.next()){
+                    Pedidos pedido = new Pedidos();
+                    pedido.setId(rs.getInt("id_pedido"));
+                    pedido.setDescripcion(rs.getString("descripcion"));
+                    pedido.setDireccionEntrega(rs.getString("direccion_entrega"));
+                    pedido.setFechaPedido(rs.getDate("fecha_pedido"));
+                    pedido.setEstado(rs.getString("estado"));
+                    pedido.setPrioridad(rs.getString("prioridad"));
+                    
+                    pedidos.add(pedido);
+                }
+                return pedidos;
+            } catch (SQLException ex) {
+                Logger.getLogger(Pedidos.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Pedidos.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
 }
