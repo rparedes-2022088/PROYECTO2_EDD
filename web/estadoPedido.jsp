@@ -14,22 +14,27 @@
 
         <%
             // Capturamos el pedido que nos envía el Controlador
-            Pedidos pedido = (Pedidos) request.getAttribute("pedidoActual");
+            java.util.List<modelo.Pedidos> lista = (java.util.List<modelo.Pedidos>) request.getAttribute("pedidoActual");
 
-            if (pedido != null) {
+            if (lista != null && !lista.isEmpty()) {
+                for(modelo.Pedidos p : lista){
         %>
-            <div class="tarjeta">
-                <p><strong>Descripción:</strong> <%= pedido.getDescripcion() %></p>
-                <p><strong>Destino:</strong> <%= pedido.getDireccionEntrega() %></p>
-                <p><strong>Estado:</strong> <span class="resaltado"><%= pedido.getEstado() %></span></p>
-            </div>
+                <div class="tarjeta">
+                    <p><strong>Descripción:</strong> <%= p.getDescripcion() %></p>
+                    <p><strong>Destino:</strong> <%= p.getDireccionEntrega() %></p>
+                    <p><strong>Estado:</strong> <%= p.getEstado() %></p>
+                </div>
         <%
+                }
             } else {
         %>
-            <p>No tienes ningún pedido en proceso actualmente.</p>
+                <p>No tienes ningún pedido en proceso actualmente.</p>
         <%
             }
         %>
+            
+            
+       
 
         <br><br>
         <a href="clientesInicio.jsp"><button>Volver al Panel</button></a>

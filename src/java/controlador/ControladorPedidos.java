@@ -59,9 +59,9 @@ public class ControladorPedidos extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String action = request.getParameter("action");
-        modelo.Usuario usaurioLogueado = (modelo.Usuario) request.getSession().getAttribute("usuarioSesion");
+        modelo.Usuario usuarioLogueado = (modelo.Usuario) request.getSession().getAttribute("usuarioSesion");
 
-        if (action == null){
+        if (action == null || usuarioLogueado == null){
             response.sendRedirect("clientesInicio.jsp");
             return;
         }
@@ -70,10 +70,28 @@ public class ControladorPedidos extends HttpServlet {
             response.sendRedirect("CrearPedidos.jsp");
         }
         else if(action.equals("estado")){
-            response.sendRedirect("estadoPedido.jsp");
+            // Instanciamos tu modelo para interactuar con Oracle
+        Pedidos manejador = new Pedidos();
+        
+        
+        java.util.List<Pedidos> listaActivos = manejador.verEstadoPedidos(usuarioLogueado.getIdUsuario());
+        
+        // Almacenamos la lista en los atributos de la petición con el nombre que espera tu JSP
+        request.setAttribute("pedidoActual", listaActivos);
+        
+        // Usamos forward en lugar de sendRedirect para mantener los datos vivos
+        request.getRequestDispatcher("estadoPedido.jsp").forward(request, response);
         }
         else if(action.equals("Historial")){
-            response.sendRedirect("historialPedido.jsp");
+            Pedidos manejador = new Pedidos();
+        
+            // Ejecutamos método de historial
+            java.util.List<Pedidos> listaHistorial = manejador.verHistorialPedidos(usuarioLogueado.getIdUsuario());
+
+            request.setAttribute("pedidoActual", listaHistorial);
+
+            // Despachamos al JSP de historial usando forward
+            request.getRequestDispatcher("historialPedido.jsp").forward(request, response);
         }
     }
 
@@ -103,7 +121,10 @@ public class ControladorPedidos extends HttpServlet {
             nuevo.setPrioridad(prioridad);
             nuevo.setEstado("PENDIENTE");
             
+            /*
             nuevo.setFechaPedido(new java.util.Date());
+            */
+            
             
             nuevo.nuevoPedido(nuevo);
             
