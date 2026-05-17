@@ -106,6 +106,10 @@ CREATE TABLE hash_table (
 
 insert into rol(nombre_rol)
 values('ADMIN');
+insert into rol(nombre_rol)
+values('CLIENTE');
+insert into rol(nombre_rol)
+values('REPARTIDOR');
 
 select * from usuarios;
 select * from rol;

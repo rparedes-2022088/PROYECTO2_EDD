@@ -118,6 +118,7 @@ public class Usuario {
         String consulta;
         ConexionBDD conexion = new ConexionBDD();
         Usuario usuario = new Usuario();
+        usuario = null;
         
         consulta = "SELECT u.*, r.nombre_rol " +
            "FROM usuarios u " +
@@ -149,8 +150,7 @@ public class Usuario {
         } catch (SQLException ex) {
             Logger.getLogger(Usuario.class.getName()).log(Level.SEVERE, null, ex);
         }
-        System.out.println(usuario.getNombre());
-        System.out.println(usuario.getRol().getNombreRol());
+        
         return usuario; //Devuelve el usuario lleno o null si no existe
     }
     

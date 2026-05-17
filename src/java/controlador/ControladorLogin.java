@@ -32,6 +32,8 @@ public class ControladorLogin extends HttpServlet {
         Usuario usuarioManejador = new Usuario();
         Usuario usuarioLogueado = usuarioManejador.login(correo, pass);
         
+        System.out.println(usuarioLogueado);
+        
         if(usuarioLogueado != null){
             
             request.getSession().setAttribute("usuarioSesion", usuarioLogueado);

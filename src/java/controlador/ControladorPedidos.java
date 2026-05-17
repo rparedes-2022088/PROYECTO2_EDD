@@ -85,7 +85,7 @@ public class ControladorPedidos extends HttpServlet {
         String descripcion = request.getParameter("descripcion");
         String prioridad = request.getParameter("prioridad");
 
-        // guardar pedido
+        
 
         System.out.println("Pedido creado");
 
