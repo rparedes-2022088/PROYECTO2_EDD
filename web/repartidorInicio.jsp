@@ -12,7 +12,7 @@
 
         <h1>Panel Repartidor</h1>
 
-        <a href="pedidosAsignados.jsp">
+        <a href="ControladorPedidosAsignados">
             <button>Pedidos Asignados</button>
         </a>
 

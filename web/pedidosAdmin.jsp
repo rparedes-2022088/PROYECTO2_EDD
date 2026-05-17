@@ -1,6 +1,6 @@
 <%-- 
-    Document   : historial
-    Created on : 17/05/2026, 12:19:00 p. m.
+    Document   : pedidosAdmin
+    Created on : 17/05/2026, 12:44:38 p. m.
     Author     : ruben
 --%>
 
@@ -11,7 +11,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Historial de pedidos</title>
+        <title>Ver todos los pedidos</title>
     </head>
     <body>
         <div class="container">
@@ -20,7 +20,11 @@
                     <th>ID</th>
                     <th>Descripcion</th>
                     <th>Dirección</th>
+                    <th>Fecha</th>
+                    <th>Estado</th>
                     <th>Prioridad</th>
+                    <th>Cliente</th>
+                    <th>Repartidor</th>
                 </tr>
                 <%
                     List<Pedidos> pedidos = (List<Pedidos>) request.getAttribute("pedidos");
@@ -31,7 +35,17 @@
                         <td><%=pedido.getId()%></td>
                         <td><%=pedido.getDescripcion()%></td>
                         <td><%=pedido.getDireccionEntrega()%></td>
+                        <td><%=pedido.getFechaPedido()%></td>
+                        <td><%=pedido.getEstado()%></td>
                         <td><%=pedido.getPrioridad()%></td>
+                        <td>
+                            <%=pedido.getCliente().getNombre()%>
+                            <%=pedido.getCliente().getApellido()%>
+                        </td>
+                        <td>
+                            <%=pedido.getRepartidor().getNombre()%>
+                            <%=pedido.getRepartidor().getApellido()%>
+                        </td>
                     </tr>
                     <%
                             }

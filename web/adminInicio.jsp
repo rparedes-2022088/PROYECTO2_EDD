@@ -16,7 +16,7 @@
             <button>Gestionar Usuarios</button>
         </a>
 
-        <a href="pedidosAdmin.jsp">
+        <a href="ControladorPedidosAdmin">
             <button>Ver Pedidos</button>
         </a>
 

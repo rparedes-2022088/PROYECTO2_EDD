@@ -20,8 +20,8 @@ import modelo.Usuario;
  *
  * @author ruben
  */
-@WebServlet(name = "ControladorHistorial", urlPatterns = {"/ControladorHistorial"})
-public class ControladorHistorial extends HttpServlet {
+@WebServlet(name = "ControladorPedidosAdmin", urlPatterns = {"/ControladorPedidosAdmin"})
+public class ControladorPedidosAdmin extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -40,10 +40,10 @@ public class ControladorHistorial extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet ControladorHistorial</title>");
+            out.println("<title>Servlet ControladorPedidosAdmin</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet ControladorHistorial at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet ControladorPedidosAdmin at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -63,25 +63,12 @@ public class ControladorHistorial extends HttpServlet {
             HttpServletResponse response)
             throws ServletException, IOException {
 
-        HttpSession sesion = request.getSession();
-
-        Usuario usuarioActivo =
-                (Usuario) sesion.getAttribute("usuarioSesion");
-
-        if(usuarioActivo == null){
-
-            response.sendRedirect("login.jsp");
-
-            return;
-        }
-
         Pedidos modeloPedidos = new Pedidos();
 
-        List<Pedidos> listaPedidos =
-                modeloPedidos.verHistorialPedidos(usuarioActivo.getIdUsuario());
+        List<Pedidos> listaPedidos = modeloPedidos.verPedidos();
         request.setAttribute("pedidos", listaPedidos);
         request.getRequestDispatcher(
-                "historial.jsp")
+                "pedidosAdmin.jsp")
                 .forward(request, response);
     }
 

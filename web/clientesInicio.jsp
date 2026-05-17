@@ -20,7 +20,7 @@
             <button>Ver Estado</button>
         </a>
 
-        <a href="historial.jsp">
+        <a href="ControladorHistorial">
             <button>Historial</button>
         </a>
 
