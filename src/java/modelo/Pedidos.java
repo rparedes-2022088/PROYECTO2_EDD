@@ -150,7 +150,7 @@ public class Pedidos {
     public void asignarRepartidor(int idPedido, int idRepartidor){
         String consulta;
         ConexionBDD conexion = new ConexionBDD();
-        consulta = "update pedidos set estado = 'ASIGNADO' id_repartidor = " + idRepartidor
+        consulta = "update pedidos set estado = 'ASIGNADO', id_repartidor = " + idRepartidor
                 + " where id_pedido = " + idPedido;
         System.out.println(consulta);
         Connection con = conexion.conectar();
@@ -250,7 +250,8 @@ public class Pedidos {
     public List<Pedidos> verEstadoPedidos(int idUsuarioActivo){
         String consulta;
         ConexionBDD conexion = new ConexionBDD();
-        consulta = "select * from pedidos where id_pedido = " + idUsuarioActivo;
+        consulta = "select * from pedidos where id_cliente = " + idUsuarioActivo
+                + "and estado in ('PENDIENTE' ,'ASIGNADO') order by id_pedido desc";
         System.out.println(consulta);
         Connection con = conexion.conectar();
         try {
@@ -289,7 +290,7 @@ public class Pedidos {
         ConexionBDD conexion = new ConexionBDD();
         consulta = "SELECT p.*, " +
                 "c.nombre AS nombre_cliente, " +
-                "c.apellido AS apellido_cliente, " +
+                "c.apellido AS apellido_cliente " +
                 "FROM pedidos p " +
                 "INNER JOIN usuarios c ON p.id_cliente = c.id_usuario " +
                 "WHERE p.id_repartidor = " + idRepartidorActivo;
@@ -328,6 +329,39 @@ public class Pedidos {
                     .log(Level.SEVERE, null, ex);
         }
 
+        return null;
+    }
+    
+    public List<Pedidos> verHistorialPedidos(int idUsuarioActivo){
+        String consulta;
+        ConexionBDD conexion = new ConexionBDD();
+        
+        // El historial solo busca los registros pasados que ya fueron 'ENTREGADO' [cite: 14]
+        consulta = "select * from pedidos where id_cliente = " + idUsuarioActivo 
+                 + " and estado = 'ENTREGADO' order by id_pedido desc";
+                 
+        System.out.println(consulta);
+        Connection con = conexion.conectar();
+        try {
+            List<Pedidos> pedidos = new ArrayList<>();
+            Statement cn = con.createStatement();
+            ResultSet rs = cn.executeQuery(consulta);
+            while(rs.next()){
+                Pedidos pedido = new Pedidos();
+                pedido.setId(rs.getInt("id_pedido"));
+                pedido.setDescripcion(rs.getString("descripcion"));
+                pedido.setDireccionEntrega(rs.getString("direccion_entrega"));
+                pedido.setFechaPedido(rs.getDate("fecha_pedido"));
+                pedido.setEstado(rs.getString("estado"));
+                pedido.setPrioridad(rs.getString("prioridad"));
+                pedidos.add(pedido);
+            }
+            return pedidos;
+        } catch (SQLException ex) {
+            Logger.getLogger(Pedidos.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try { if(con != null) con.close(); } catch(SQLException e){}
+        }
         return null;
     }
 }
