@@ -11,6 +11,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import modelo.Pedidos;
 
 /**
  *
@@ -58,15 +59,21 @@ public class ControladorPedidos extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String action = request.getParameter("action");
+        modelo.Usuario usaurioLogueado = (modelo.Usuario) request.getSession().getAttribute("usuarioSesion");
 
-        if (action.equals("listar")) {
-
-            response.sendRedirect("admin/pedidosAdmin.jsp");
-
-        } else if (action.equals("estado")) {
-
-            response.sendRedirect("cliente/estadoPedido.jsp");
-
+        if (action == null){
+            response.sendRedirect("clientesInicio.jsp");
+            return;
+        }
+        
+        if(action.equals("solicitar")){
+            response.sendRedirect("CrearPedidos.jsp");
+        }
+        else if(action.equals("estado")){
+            response.sendRedirect("estadoPedido.jsp");
+        }
+        else if(action.equals("Historial")){
+            response.sendRedirect("historialPedido.jsp");
         }
     }
 
@@ -85,11 +92,28 @@ public class ControladorPedidos extends HttpServlet {
         String descripcion = request.getParameter("descripcion");
         String prioridad = request.getParameter("prioridad");
 
+        modelo.Usuario clienteActual = (modelo.Usuario) request.getSession().getAttribute("usuarioSesion");
         
-
-        System.out.println("Pedido creado");
-
-        response.sendRedirect("cliente/estadoPedido.jsp");
+        if(clienteActual != null){
+            
+            Pedidos nuevo = new Pedidos();
+            nuevo.setCliente(clienteActual);
+            nuevo.setDescripcion(descripcion);
+            nuevo.setDireccionEntrega(direccion);
+            nuevo.setPrioridad(prioridad);
+            nuevo.setEstado("PENDIENTE");
+            
+            nuevo.setFechaPedido(new java.util.Date());
+            
+            nuevo.nuevoPedido(nuevo);
+            
+            System.out.println("Pedido guardado");
+            
+            response.sendRedirect("ControladorPedidos?action=estado");
+        }
+        else{
+            response.sendRedirect("login.jsp");
+        }
     }
 
     /**

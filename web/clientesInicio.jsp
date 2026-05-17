@@ -12,19 +12,19 @@
 
         <h1>Panel Cliente</h1>
 
-        <a href="crearPedido.jsp">
+        <a href="ControladorPedidos?action=solicitar">
             <button>Crear Pedido</button>
         </a>
 
-        <a href="estadoPedido.jsp">
+        <a href="ControladorPedidos?action=estado">
             <button>Ver Estado</button>
         </a>
 
-        <a href="historial.jsp">
+        <a href="ControladorPedidos?action=historial">
             <button>Historial</button>
         </a>
 
-        <a href="login.jsp">
+        <a href="ControladorLogOut">
             <button>Cerrar Sesión</button>
         </a>
 
