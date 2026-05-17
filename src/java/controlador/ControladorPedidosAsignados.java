@@ -25,8 +25,7 @@ public class ControladorPedidosAsignados extends HttpServlet {
 
         HttpSession sesion = request.getSession();
 
-        Usuario usuarioActivo =
-                (Usuario) sesion.getAttribute("usuarioSesion");
+        Usuario usuarioActivo = (Usuario) sesion.getAttribute("usuarioSesion");
 
         if(usuarioActivo == null){
 
@@ -37,9 +36,7 @@ public class ControladorPedidosAsignados extends HttpServlet {
 
         Pedidos modeloPedidos = new Pedidos();
 
-        List<Pedidos> listaPedidos =
-                modeloPedidos.verPedidosAsignados(
-                        usuarioActivo.getIdUsuario());
+        List<Pedidos> listaPedidos = modeloPedidos.verPedidosAsignados(usuarioActivo.getIdUsuario());
         request.setAttribute("pedidos", listaPedidos);
         request.getRequestDispatcher(
                 "pedidosAsignados.jsp")

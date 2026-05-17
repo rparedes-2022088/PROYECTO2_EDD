@@ -191,13 +191,18 @@ public class Pedidos {
         String consulta;
         ConexionBDD conexion = new ConexionBDD();
         consulta = "SELECT p.*, " +
-                "c.nombre AS nombre_cliente, " +
-                "c.apellido AS apellido_cliente, " +
-                "r.nombre AS nombre_repartidor, " +
-                "r.apellido AS apellido_repartidor " +
-                "FROM pedidos p " +
-                "INNER JOIN usuarios c ON p.id_cliente = c.id_usuario " +
-                "LEFT JOIN usuarios r ON p.id_repartidor = r.id_usuario";
+            "c.nombre AS nombre_cliente, " +
+            "c.apellido AS apellido_cliente, " +
+            "r.nombre AS nombre_repartidor, " +
+            "r.apellido AS apellido_repartidor " +
+            "FROM pedidos p " +
+            "INNER JOIN usuarios c ON p.id_cliente = c.id_usuario " +
+            "LEFT JOIN usuarios r ON p.id_repartidor = r.id_usuario " +
+            "ORDER BY CASE p.prioridad " +
+            "WHEN 'ALTA' THEN 1 " +
+            "WHEN 'NORMAL' THEN 2 " +
+            "WHEN 'BAJA' THEN 3 " +
+            "END, p.id_pedido DESC";
         System.out.println(consulta);
         Connection con = conexion.conectar();
         try {
@@ -250,8 +255,14 @@ public class Pedidos {
     public List<Pedidos> verEstadoPedidos(int idUsuarioActivo){
         String consulta;
         ConexionBDD conexion = new ConexionBDD();
-        consulta = "select * from pedidos where id_cliente = " + idUsuarioActivo
-                + "and estado in ('PENDIENTE' ,'ASIGNADO') order by id_pedido desc";
+        consulta = "SELECT * FROM pedidos " +
+            "WHERE id_cliente = " + idUsuarioActivo + " " +
+            "AND estado IN ('PENDIENTE', 'ASIGNADO') " +
+            "ORDER BY CASE prioridad " +
+            "WHEN 'ALTA' THEN 1 " +
+            "WHEN 'NORMAL' THEN 2 " +
+            "WHEN 'BAJA' THEN 3 " +
+            "END, id_pedido DESC";
         System.out.println(consulta);
         Connection con = conexion.conectar();
         try {
@@ -289,14 +300,19 @@ public class Pedidos {
         String consulta;
         ConexionBDD conexion = new ConexionBDD();
         consulta = "SELECT p.*, " +
-                "c.nombre AS nombre_cliente, " +
-                "c.apellido AS apellido_cliente " +
-                "FROM pedidos p " +
-                "INNER JOIN usuarios c " +
-                "ON p.id_cliente = c.id_usuario " +
-                "WHERE p.id_repartidor = "
-                + idRepartidorActivo +
-                " AND p.estado = 'ASIGNADO'";
+            "c.nombre AS nombre_cliente, " +
+            "c.apellido AS apellido_cliente " +
+            "FROM pedidos p " +
+            "INNER JOIN usuarios c " +
+            "ON p.id_cliente = c.id_usuario " +
+            "WHERE p.id_repartidor = "
+            + idRepartidorActivo +
+            " AND p.estado = 'ASIGNADO' " +
+            "ORDER BY CASE p.prioridad " +
+            "WHEN 'ALTA' THEN 1 " +
+            "WHEN 'NORMAL' THEN 2 " +
+            "WHEN 'BAJA' THEN 3 " +
+            "END, p.id_pedido DESC";
         System.out.println(consulta);
         Connection con = conexion.conectar();
         try {
@@ -329,10 +345,14 @@ public class Pedidos {
         String consulta;
         ConexionBDD conexion = new ConexionBDD();
         
-        // El historial solo busca los registros pasados que ya fueron 'ENTREGADO' [cite: 14]
-        consulta = "select * from pedidos where id_cliente = " + idUsuarioActivo 
-                 + " and estado = 'ENTREGADO' order by id_pedido desc";
-                 
+        consulta = "SELECT * FROM pedidos " +
+            "WHERE id_cliente = " + idUsuarioActivo +
+            " AND estado = 'ENTREGADO' " +
+            "ORDER BY CASE prioridad " +
+            "WHEN 'ALTA' THEN 1 " +
+            "WHEN 'NORMAL' THEN 2 " +
+            "WHEN 'BAJA' THEN 3 " +
+            "END, id_pedido DESC";
         System.out.println(consulta);
         Connection con = conexion.conectar();
         try {
@@ -352,8 +372,6 @@ public class Pedidos {
             return pedidos;
         } catch (SQLException ex) {
             Logger.getLogger(Pedidos.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            try { if(con != null) con.close(); } catch(SQLException e){}
         }
         return null;
     }

@@ -12,15 +12,15 @@
 
         <h1>Panel Cliente</h1>
 
-        <a href="ControladorPedidos?action=solicitar">
+        <a href="CrearPedidos.jsp">
             <button>Crear Pedido</button>
         </a>
 
-        <a href="ControladorPedidos?action=estado">
+        <a href="verEstado.jsp">
             <button>Ver Estado</button>
         </a>
 
-        <a href="ControladorPedidos?action=historial">
+        <a href="historial.jsp">
             <button>Historial</button>
         </a>
 
