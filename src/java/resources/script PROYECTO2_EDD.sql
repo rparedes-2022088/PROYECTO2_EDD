@@ -7,8 +7,6 @@ CREATE SEQUENCE seq_roles
 START WITH 1
 INCREMENT BY 1;
 
-SELECT * FROM user_sequences;
-
 CREATE OR REPLACE TRIGGER trg_roles
 BEFORE INSERT ON rol
 FOR EACH ROW
@@ -86,23 +84,49 @@ CREATE TABLE arbol_binario (
 
     id_usuario NUMBER NOT NULL,
 
-    hijo_izquierdo NUMBER,
-    hijo_derecho NUMBER,
-
     CONSTRAINT fk_arbol_usuario
         FOREIGN KEY (id_usuario)
         REFERENCES usuarios(id_usuario)
 );
 
-CREATE TABLE hash_table (
-    posicion_hash NUMBER PRIMARY KEY,
+CREATE SEQUENCE seq_arbol
+START WITH 1
+INCREMENT BY 1;
 
-    id_usuario NUMBER NOT NULL UNIQUE,
+CREATE OR REPLACE TRIGGER trg_arbol
+BEFORE INSERT ON arbol_binario
+FOR EACH ROW
+BEGIN
+    :NEW.id_nodo := seq_arbol.NEXTVAL;
+END;
+/
+
+CREATE TABLE hash_table (
+
+    id_hash NUMBER PRIMARY KEY,
+
+    posicion_hash NUMBER NOT NULL,
+
+    id_usuario NUMBER NOT NULL,
 
     CONSTRAINT fk_hash_usuario
-        FOREIGN KEY (id_usuario)
+        FOREIGN KEY(id_usuario)
         REFERENCES usuarios(id_usuario)
 );
+
+CREATE SEQUENCE seq_hash
+START WITH 1
+INCREMENT BY 1;
+
+CREATE OR REPLACE TRIGGER trg_hash
+BEFORE INSERT ON hash_table
+FOR EACH ROW
+BEGIN
+    :NEW.id_hash := seq_hash.NEXTVAL;
+END;
+/
+
+select * from hash_table;
 
 insert into rol(nombre_rol)
 values('ADMIN');
@@ -111,8 +135,12 @@ values('CLIENTE');
 insert into rol(nombre_rol)
 values('REPARTIDOR');
 
+commit;
+update usuarios set id_rol = 1 where id_usuario = 1;
+commit;
+select * from arbol_binario;
+select * from hash_table;
 select * from usuarios;
 select * from rol;
-
 insert into usuarios(nombre, apellido, correo, pass, telefono, direccion, fecha_registro, id_rol)
 values('Ruben', 'Paredes', 'rdparedes@gmail.com', '1234', '12345678', 'mi casa', TO_DATE('12/05/2026', 'DD/MM/YYYY'), 1);

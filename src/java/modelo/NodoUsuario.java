@@ -9,11 +9,37 @@ package modelo;
  * @author ruben
  */
 public class NodoUsuario {
-    Usuario usuario;
-    NodoUsuario izquierda;
-    NodoUsuario derecha;
+    private Usuario usuario;
+    private NodoUsuario izquierda;
+    private NodoUsuario derecha;
     
     public NodoUsuario(Usuario usuario){
         this.usuario = usuario;
     }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
+
+    public NodoUsuario getIzquierda() {
+        return izquierda;
+    }
+
+    public void setIzquierda(NodoUsuario izquierda) {
+        this.izquierda = izquierda;
+    }
+
+    public NodoUsuario getDerecha() {
+        return derecha;
+    }
+
+    public void setDerecha(NodoUsuario derecha) {
+        this.derecha = derecha;
+    }
+    
+    
 }

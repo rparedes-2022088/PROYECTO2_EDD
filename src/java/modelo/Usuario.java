@@ -157,10 +157,10 @@ public class Usuario {
     public boolean registrarUsuario(Usuario usuario){
         String consulta;
         ConexionBDD conexion = new ConexionBDD();
-        boolean exito = false; //valiable para avisarle al servlet
-        
+        boolean exito = false;
         consulta = "INSERT INTO usuarios(nombre, apellido, correo, pass, telefono, direccion, fecha_registro, id_rol)"
-                + " VALUES('" + usuario.getNombre() + "', '"
+                + " VALUES('"
+                + usuario.getNombre() + "', '"
                 + usuario.getApellido() + "', '"
                 + usuario.getCorreo() + "', '"
                 + usuario.getPass() + "', '"
@@ -168,23 +168,121 @@ public class Usuario {
                 + usuario.getDireccion() + "', "
                 + "SYSDATE, "
                 + usuario.getRol().getIdRol() + ")";
-        
         System.out.println(consulta);
-        
         Connection con = conexion.conectar();
         try {
             Statement cn = con.createStatement();
             int filas = cn.executeUpdate(consulta);
             if(filas > 0){
                 System.out.println("Usuario agregado exitosamente");
+                int idGenerado = obtenerUltimoId();
+                usuario.setIdUsuario(idGenerado);
+                int posicionHash = calcularHash(usuario.getCorreo());
+                insertarHash(posicionHash, idGenerado);
+                insertarArbol(idGenerado, idGenerado);
                 exito = true;
             } else {
                 System.out.println("Usuario no agregado");
             }
         } catch (SQLException ex) {
-            Logger.getLogger(Usuario.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Usuario.class.getName())
+                    .log(Level.SEVERE, null, ex);
         }
-        
+
         return exito;
+    }
+    
+    public int calcularHash(String correo){
+
+        int suma = 0;
+
+        for(int i = 0; i < correo.length(); i++){
+
+            suma += correo.charAt(i);
+        }
+
+        return suma % 10;
+    }
+    
+    public void insertarHash(int posicionHash, int idUsuario){
+
+        String consulta;
+
+        ConexionBDD conexion = new ConexionBDD();
+
+        consulta = "INSERT INTO hash_table(posicion_hash, id_usuario) "
+                + "VALUES(" + posicionHash + ", " + idUsuario + ")";
+
+        Connection con = conexion.conectar();
+
+        try {
+
+            Statement cn = con.createStatement();
+
+            cn.executeUpdate(consulta);
+
+            System.out.println("Insertado en hash");
+
+        } catch (SQLException ex) {
+
+            Logger.getLogger(Usuario.class.getName())
+                    .log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public void insertarArbol(int claveArbol, int idUsuario){
+
+        String consulta;
+
+        ConexionBDD conexion = new ConexionBDD();
+
+        consulta = "INSERT INTO arbol_binario(clave_arbol, id_usuario) "
+                + "VALUES(" + claveArbol + ", " + idUsuario + ")";
+
+        Connection con = conexion.conectar();
+
+        try {
+
+            Statement cn = con.createStatement();
+
+            cn.executeUpdate(consulta);
+
+            System.out.println("Insertado en árbol");
+
+        } catch (SQLException ex) {
+
+            Logger.getLogger(Usuario.class.getName())
+                    .log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public int obtenerUltimoId(){
+
+        String consulta;
+
+        ConexionBDD conexion = new ConexionBDD();
+
+        consulta = "SELECT MAX(id_usuario) AS ultimo FROM usuarios";
+
+        Connection con = conexion.conectar();
+
+        try {
+
+            Statement cn = con.createStatement();
+
+            ResultSet rs = cn.executeQuery(consulta);
+
+            if(rs.next()){
+
+                return rs.getInt("ultimo");
+            }
+
+        } catch (SQLException ex) {
+
+            Logger.getLogger(Usuario.class.getName())
+                    .log(Level.SEVERE, null, ex);
+        }
+
+        return 0;
     }
 }
