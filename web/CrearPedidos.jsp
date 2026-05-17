@@ -19,7 +19,7 @@
     <h2>Solicitar Nuevo Envío</h2>
     <p>Bienvenido, <%= usuarioLogueado.getNombre() %> </p>
 
-    <form action="../ControladorPedidos" method="POST">
+    <form action="ControladorPedidos" method="POST">
         
         <label>Descripción del Pedido (¿Qué pediste?):</label><br>
         <textarea name="descripcion" rows="4" cols="40" required placeholder="Ej. Comida rápida, documentos importantes, etc."></textarea>

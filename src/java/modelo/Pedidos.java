@@ -127,9 +127,9 @@ public class Pedidos {
         consulta = "insert into pedidos(descripcion, direccion_entrega, fecha_pedido, estado, prioridad, id_cliente)"
                 + " values('" + pedido.getDescripcion() + "', '"
                 + pedido.getDireccionEntrega() + "', "
-                + pedido.getFechaPedido() + ", "
-                + pedido.getEstado() + ", "
-                + pedido.getPrioridad() + ", "
+                + "SYSDATE, '"
+                + pedido.getEstado() + "', '"
+                + pedido.getPrioridad() + "', "
                 + pedido.getCliente().getIdUsuario() + ")";
         System.out.println(consulta);
         Connection con = conexion.conectar();
@@ -142,7 +142,7 @@ public class Pedidos {
                 System.out.println("Pedido no agregado");
             }
         } catch (SQLException ex) {
-            Logger.getLogger(Usuario.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Pedidos.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
