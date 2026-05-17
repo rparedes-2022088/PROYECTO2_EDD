@@ -30,9 +30,6 @@
             <label>Apellido</label>
             <input type="text" name="apellido" required>
 
-            <label>Usuario</label>
-            <input type="text" name="usuario" required>
-
             <label>Contraseña</label>
             <input type="password" name="password" required>
 
@@ -42,8 +39,14 @@
             <label>Teléfono</label>
             <input type="text" name="telefono">
             
-            <<label>Correo</label>
+            <label>Correo</label>
             <input type="text" name="correo" required>
+            
+            <label>Rol</label>
+            <select name="select">
+                <option value="2">Cliente</option>
+                <option value="3" selected>Repartidor</option>
+            </select>
 
             <button type="submit">Registrarse</button>
 
