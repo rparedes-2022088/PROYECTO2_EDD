@@ -4,6 +4,15 @@
  */
 package modelo;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author ruben
@@ -36,5 +45,35 @@ public class Rol {
         this.nombreRol = nombreRol;
     }
     
-    
+    public List<Rol> verRoles(){
+        String consulta;
+        ConexionBDD conexion = new ConexionBDD();
+        consulta = "select * from rol";
+        System.out.println(consulta);
+        Connection con = conexion.conectar();
+        try {
+            List<Rol> roles = new ArrayList<>();
+            Statement cn = con.createStatement();
+            try {
+                ResultSet rs = cn.executeQuery(consulta);
+                while(rs.next()){
+                    Rol rol = new Rol();
+                    rol.setIdRol(rs.getInt("id_rol"));
+                    rol.setNombreRol(rs.getString("nombre_rol"));
+                    roles.add(rol);
+                }
+                return roles;
+            } catch (SQLException ex) {
+                Logger.getLogger(Pedidos.class.getName())
+                        .log(Level.SEVERE, null, ex);
+            }
+
+        } catch (SQLException ex) {
+
+            Logger.getLogger(Pedidos.class.getName())
+                    .log(Level.SEVERE, null, ex);
+        }
+
+        return null;
+    }
 }
