@@ -37,7 +37,7 @@ public class ControladorLogin extends HttpServlet {
             request.getSession().setAttribute("usuarioSesion", usuarioLogueado);
             
             String rol = usuarioLogueado.getRol().getNombreRol();
-            if(rol.equalsIgnoreCase("administrador")){
+            if(rol.equalsIgnoreCase("admin")){
                 response.sendRedirect("adminInicio.jsp");
             }
             else if(rol.equalsIgnoreCase("repartidor")){

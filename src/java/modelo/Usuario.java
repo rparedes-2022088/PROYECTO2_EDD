@@ -121,7 +121,7 @@ public class Usuario {
         
         consulta = "SELECT u.*, r.nombre_rol " +
            "FROM usuarios u " +
-           "INNER JOIN roles r ON u.id_rol = r.id_rol " +
+           "INNER JOIN rol r ON u.id_rol = r.id_rol " +
            "WHERE correo = '" + correo + "' " +
            "AND pass = '" + password + "'";
         System.out.println(consulta);
@@ -149,6 +149,8 @@ public class Usuario {
         } catch (SQLException ex) {
             Logger.getLogger(Usuario.class.getName()).log(Level.SEVERE, null, ex);
         }
+        System.out.println(usuario.getNombre());
+        System.out.println(usuario.getRol().getNombreRol());
         return usuario; //Devuelve el usuario lleno o null si no existe
     }
     
@@ -163,8 +165,8 @@ public class Usuario {
                 + usuario.getCorreo() + "', '"
                 + usuario.getPass() + "', '"
                 + usuario.getTelefono() + "', '"
-                + usuario.getDireccion() + "', '"
-                + "SYDATE, "
+                + usuario.getDireccion() + "', "
+                + "SYSDATE, "
                 + usuario.getRol().getIdRol() + ")";
         
         System.out.println(consulta);
@@ -181,9 +183,6 @@ public class Usuario {
             }
         } catch (SQLException ex) {
             Logger.getLogger(Usuario.class.getName()).log(Level.SEVERE, null, ex);
-        }finally{
-            //esto cierra la conexión para que Oracle no se sature 
-            try{ if(con != null) con.close();} catch(SQLException e){}
         }
         
         return exito;
