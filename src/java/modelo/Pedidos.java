@@ -18,12 +18,28 @@ import java.util.logging.Logger;
  *
  * @author ruben
  */
+
+/*
+    listado TODO
+    Admin: Ver todos los pedidos, asignar repartidores.
+        Listos: Ver todos los pedidos, asignar repartidores.
+
+
+    Cliente: Crear pedidos, consultar estados de los pedidos.
+        Listos: Crear pedidos, consultar estados de los pedidos
+No entiendo el ver historial
+
+    Repartidor: Ver pedidos asignados, marcar pedidos como entregados.
+        Listos: , marcar como entregados
+*/
+
+
 public class Pedidos {
     private int id;
     private String descripcion;
     private String direccionEntrega;
     private Date fechaPedido;
-    private String estado; //SIN = sin asignar, ASIGNADO = asignado, ENTREGADO = entregado
+    private String estado; //PENDIENTE = sin asignar, ASIGNADO = asignado, ENTREGADO = entregado
     private String prioridad;
     private Usuario cliente;
     private Usuario repartidor;
@@ -174,12 +190,71 @@ public class Pedidos {
     public List<Pedidos> verPedidos(){
         String consulta;
         ConexionBDD conexion = new ConexionBDD();
-        
-        consulta = "select * from pedidos";
+        consulta = "SELECT p.*, " +
+                "c.nombre AS nombre_cliente, " +
+                "c.apellido AS apellido_cliente, " +
+                "r.nombre AS nombre_repartidor, " +
+                "r.apellido AS apellido_repartidor " +
+                "FROM pedidos p " +
+                "INNER JOIN usuarios c ON p.id_cliente = c.id_usuario " +
+                "LEFT JOIN usuarios r ON p.id_repartidor = r.id_usuario";
         System.out.println(consulta);
         Connection con = conexion.conectar();
         try {
-            List<Pedidos> pedidos = new ArrayList();
+            List<Pedidos> pedidos = new ArrayList<>();
+            Statement cn = con.createStatement();
+            try {
+                ResultSet rs = cn.executeQuery(consulta);
+                while(rs.next()){
+                    Pedidos pedido = new Pedidos();
+                    Usuario cliente = new Usuario();
+                    Usuario repartidor = new Usuario();
+                    pedido.setId(rs.getInt("id_pedido"));
+                    pedido.setDescripcion(rs.getString("descripcion"));
+                    pedido.setDireccionEntrega(rs.getString("direccion_entrega"));
+                    pedido.setFechaPedido(rs.getDate("fecha_pedido"));
+                    pedido.setEstado(rs.getString("estado"));
+                    pedido.setPrioridad(rs.getString("prioridad"));
+
+                    cliente.setNombre(rs.getString("nombre_cliente"));
+                    cliente.setApellido(rs.getString("apellido_cliente"));
+                    pedido.setCliente(cliente);
+
+                    if(rs.getString("nombre_repartidor") != null){
+                        repartidor.setNombre(rs.getString("nombre_repartidor"));
+                        repartidor.setApellido(rs.getString("apellido_repartidor"));
+                        pedido.setRepartidor(repartidor);
+                    } else {
+                        repartidor.setNombre("Sin asignar");
+                        repartidor.setApellido("Sin asignar");
+                        pedido.setRepartidor(repartidor);
+                    }
+                    pedidos.add(pedido);
+                }
+                return pedidos;
+            } catch (SQLException ex) {
+                Logger.getLogger(Pedidos.class.getName())
+                        .log(Level.SEVERE, null, ex);
+            }
+
+        } catch (SQLException ex) {
+
+            Logger.getLogger(Pedidos.class.getName())
+                    .log(Level.SEVERE, null, ex);
+        }
+
+        return null;
+    }
+    
+    //Cliente
+    public List<Pedidos> verEstadoPedidos(int idUsuarioActivo){
+        String consulta;
+        ConexionBDD conexion = new ConexionBDD();
+        consulta = "select * from pedidos where id_pedido = " + idUsuarioActivo;
+        System.out.println(consulta);
+        Connection con = conexion.conectar();
+        try {
+            List<Pedidos> pedidos = new ArrayList<>();
             Statement cn = con.createStatement();
             try {
                 ResultSet rs = cn.executeQuery(consulta);
@@ -191,16 +266,68 @@ public class Pedidos {
                     pedido.setFechaPedido(rs.getDate("fecha_pedido"));
                     pedido.setEstado(rs.getString("estado"));
                     pedido.setPrioridad(rs.getString("prioridad"));
-                    
                     pedidos.add(pedido);
                 }
                 return pedidos;
             } catch (SQLException ex) {
-                Logger.getLogger(Pedidos.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(Pedidos.class.getName())
+                        .log(Level.SEVERE, null, ex);
             }
+
         } catch (SQLException ex) {
-            Logger.getLogger(Pedidos.class.getName()).log(Level.SEVERE, null, ex);
+
+            Logger.getLogger(Pedidos.class.getName())
+                    .log(Level.SEVERE, null, ex);
         }
+
+        return null;
+    }
+    
+    //Repartidor
+    public List<Pedidos> verPedidosAsignados(int idRepartidorActivo){
+        String consulta;
+        ConexionBDD conexion = new ConexionBDD();
+        consulta = "SELECT p.*, " +
+                "c.nombre AS nombre_cliente, " +
+                "c.apellido AS apellido_cliente, " +
+                "FROM pedidos p " +
+                "INNER JOIN usuarios c ON p.id_cliente = c.id_usuario " +
+                "WHERE p.id_repartidor = " + idRepartidorActivo;
+        System.out.println(consulta);
+        Connection con = conexion.conectar();
+        try {
+            List<Pedidos> pedidos = new ArrayList<>();
+            Statement cn = con.createStatement();
+            try {
+                ResultSet rs = cn.executeQuery(consulta);
+                while(rs.next()){
+                    Pedidos pedido = new Pedidos();
+                    Usuario cliente = new Usuario();
+                    Usuario repartidor = new Usuario();
+                    pedido.setId(rs.getInt("id_pedido"));
+                    pedido.setDescripcion(rs.getString("descripcion"));
+                    pedido.setDireccionEntrega(rs.getString("direccion_entrega"));
+                    pedido.setFechaPedido(rs.getDate("fecha_pedido"));
+                    pedido.setEstado(rs.getString("estado"));
+                    pedido.setPrioridad(rs.getString("prioridad"));
+
+                    cliente.setNombre(rs.getString("nombre_cliente"));
+                    cliente.setApellido(rs.getString("apellido_cliente"));
+                    pedido.setCliente(cliente);
+                    pedidos.add(pedido);
+                }
+                return pedidos;
+            } catch (SQLException ex) {
+                Logger.getLogger(Pedidos.class.getName())
+                        .log(Level.SEVERE, null, ex);
+            }
+
+        } catch (SQLException ex) {
+
+            Logger.getLogger(Pedidos.class.getName())
+                    .log(Level.SEVERE, null, ex);
+        }
+
         return null;
     }
 }
