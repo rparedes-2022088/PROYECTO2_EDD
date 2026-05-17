@@ -251,6 +251,71 @@ public class Pedidos {
         return null;
     }
     
+    public List<Pedidos> verPedidosSinAsignar(){
+        String consulta;
+        ConexionBDD conexion = new ConexionBDD();
+        consulta = "SELECT p.*, " +
+            "c.nombre AS nombre_cliente, " +
+            "c.apellido AS apellido_cliente, " +
+            "r.nombre AS nombre_repartidor, " +
+            "r.apellido AS apellido_repartidor " +
+            "FROM pedidos p " +
+            "INNER JOIN usuarios c ON p.id_cliente = c.id_usuario " +
+            "LEFT JOIN usuarios r ON p.id_repartidor = r.id_usuario " +
+            "WHERE p.estado = 'PENDIENTE' " +
+            "ORDER BY CASE p.prioridad " +
+            "WHEN 'ALTA' THEN 1 " +
+            "WHEN 'NORMAL' THEN 2 " +
+            "WHEN 'BAJA' THEN 3 " +
+            "END, p.id_pedido DESC ";
+        System.out.println(consulta);
+        Connection con = conexion.conectar();
+        try {
+            List<Pedidos> pedidos = new ArrayList<>();
+            Statement cn = con.createStatement();
+            try {
+                ResultSet rs = cn.executeQuery(consulta);
+                while(rs.next()){
+                    Pedidos pedido = new Pedidos();
+                    Usuario cliente = new Usuario();
+                    Usuario repartidor = new Usuario();
+                    pedido.setId(rs.getInt("id_pedido"));
+                    pedido.setDescripcion(rs.getString("descripcion"));
+                    pedido.setDireccionEntrega(rs.getString("direccion_entrega"));
+                    pedido.setFechaPedido(rs.getDate("fecha_pedido"));
+                    pedido.setEstado(rs.getString("estado"));
+                    pedido.setPrioridad(rs.getString("prioridad"));
+
+                    cliente.setNombre(rs.getString("nombre_cliente"));
+                    cliente.setApellido(rs.getString("apellido_cliente"));
+                    pedido.setCliente(cliente);
+
+                    if(rs.getString("nombre_repartidor") != null){
+                        repartidor.setNombre(rs.getString("nombre_repartidor"));
+                        repartidor.setApellido(rs.getString("apellido_repartidor"));
+                        pedido.setRepartidor(repartidor);
+                    } else {
+                        repartidor.setNombre("Sin asignar");
+                        repartidor.setApellido("Sin asignar");
+                        pedido.setRepartidor(repartidor);
+                    }
+                    pedidos.add(pedido);
+                }
+                return pedidos;
+            } catch (SQLException ex) {
+                Logger.getLogger(Pedidos.class.getName())
+                        .log(Level.SEVERE, null, ex);
+            }
+
+        } catch (SQLException ex) {
+
+            Logger.getLogger(Pedidos.class.getName())
+                    .log(Level.SEVERE, null, ex);
+        }
+
+        return null;
+    }
+    
     //Cliente
     public List<Pedidos> verEstadoPedidos(int idUsuarioActivo){
         String consulta;

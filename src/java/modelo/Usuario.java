@@ -9,6 +9,8 @@ import java.sql.Connection;
 import java.sql.Statement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 
@@ -112,6 +114,93 @@ public class Usuario {
 
     public void setRol(Rol rol) {
         this.rol = rol;
+    }
+    
+    public List<Usuario> verUsuarios(){
+        String consulta;
+        ConexionBDD conexion = new ConexionBDD();
+        consulta = "SELECT u.*, r.nombre_rol " +
+           "FROM usuarios u " +
+           "INNER JOIN rol r ON u.id_rol = r.id_rol";
+        System.out.println(consulta);
+        Connection con = conexion.conectar();
+        try {
+            List<Usuario> usuarios = new ArrayList<>();
+            Statement cn = con.createStatement();
+            try {
+                ResultSet rs = cn.executeQuery(consulta);
+                while(rs.next()){
+                    Usuario usuario = new Usuario();
+                    usuario.setIdUsuario(rs.getInt("id_usuario"));
+                    usuario.setNombre(rs.getString("nombre"));
+                    usuario.setApellido(rs.getString("apellido"));
+                    usuario.setCorreo(rs.getString("correo"));
+                    usuario.setPass(rs.getString("pass"));
+                    usuario.setTelefono(rs.getString("telefono"));
+                    usuario.setDireccion(rs.getString("direccion"));
+                    usuario.setFechaRegistro(rs.getDate("fecha_registro"));
+
+                    Rol rol = new Rol();
+                    rol.setIdRol(rs.getInt("id_rol"));
+                    rol.setNombreRol(rs.getString("nombre_rol"));
+                    usuario.setRol(rol);
+                    usuarios.add(usuario);
+                }
+                return usuarios;
+            } catch (SQLException ex) {
+                Logger.getLogger(Pedidos.class.getName())
+                        .log(Level.SEVERE, null, ex);
+            }
+        } catch (SQLException ex) {
+
+            Logger.getLogger(Pedidos.class.getName())
+                    .log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+    
+    public List<Usuario> verRepartidores(){
+        String consulta;
+        ConexionBDD conexion = new ConexionBDD();
+        consulta = "SELECT u.*, r.nombre_rol " +
+            "FROM usuarios u " +
+            "INNER JOIN rol r ON u.id_rol = r.id_rol " +
+            "WHERE u.id_rol = 3";
+        System.out.println(consulta);
+        Connection con = conexion.conectar();
+        try {
+            List<Usuario> usuarios = new ArrayList<>();
+            Statement cn = con.createStatement();
+            try {
+                ResultSet rs = cn.executeQuery(consulta);
+                while(rs.next()){
+                    Usuario usuario = new Usuario();
+                    usuario.setIdUsuario(rs.getInt("id_usuario"));
+                    usuario.setNombre(rs.getString("nombre"));
+                    usuario.setApellido(rs.getString("apellido"));
+                    usuario.setCorreo(rs.getString("correo"));
+                    usuario.setPass(rs.getString("pass"));
+                    usuario.setTelefono(rs.getString("telefono"));
+                    usuario.setDireccion(rs.getString("direccion"));
+                    usuario.setFechaRegistro(rs.getDate("fecha_registro"));
+
+                    Rol rol = new Rol();
+                    rol.setIdRol(rs.getInt("id_rol"));
+                    rol.setNombreRol(rs.getString("nombre_rol"));
+                    usuario.setRol(rol);
+                    usuarios.add(usuario);
+                }
+                return usuarios;
+            } catch (SQLException ex) {
+                Logger.getLogger(Pedidos.class.getName())
+                        .log(Level.SEVERE, null, ex);
+            }
+        } catch (SQLException ex) {
+
+            Logger.getLogger(Pedidos.class.getName())
+                    .log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
     
     public Usuario login(String correo, String password){

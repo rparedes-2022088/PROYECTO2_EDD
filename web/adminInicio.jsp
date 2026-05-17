@@ -20,7 +20,7 @@
             <button>Ver Pedidos</button>
         </a>
 
-        <a href="asignarRepartidor.jsp">
+        <a href="ControladorAsignarRepartidores">
             <button>Asignar Repartidores</button>
         </a>
 

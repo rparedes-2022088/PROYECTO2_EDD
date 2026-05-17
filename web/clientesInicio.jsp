@@ -36,7 +36,7 @@
             <button>Ver Estado</button>
         </a>
 
-        <a href="ControladorPedidos?action=historial">
+        <a href="ControladorHistorial">
             <button>Historial</button>
         </a>
 
