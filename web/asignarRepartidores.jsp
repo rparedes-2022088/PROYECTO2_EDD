@@ -43,6 +43,7 @@
             </select>
         </div>
             <div class="container">
+                <label>Repartidor</label>
                 <select name="selectRepartidor">
                 <%
                 List<Usuario> usuarios = (List<Usuario>) request.getAttribute("usuarios");
