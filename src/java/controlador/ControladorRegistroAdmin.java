@@ -20,8 +20,8 @@ import modelo.Usuario;
  *
  * @author chris
  */
-@WebServlet(name = "ControladorRegistro", urlPatterns = {"/ControladorRegistro"})
-public class ControladorRegistro extends HttpServlet {
+@WebServlet(name = "ControladorRegistroAdmin", urlPatterns = {"/ControladorRegistroAdmin"})
+public class ControladorRegistroAdmin extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -109,7 +109,7 @@ public class ControladorRegistro extends HttpServlet {
             
             System.out.println("usuario indexado en posicion: " + posicionHash);
             
-            response.sendRedirect("login.jsp?registro=ok");
+            response.sendRedirect("ControladorAdminUsuarios");
         }
         else{
             response.sendRedirect("registro.jsp?error=bd");

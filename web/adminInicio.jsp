@@ -12,7 +12,7 @@
 
         <h1>Panel Administrador</h1>
 
-        <a href="usuarios.jsp">
+        <a href="ControladorAdminUsuarios">
             <button>Gestionar Usuarios</button>
         </a>
 

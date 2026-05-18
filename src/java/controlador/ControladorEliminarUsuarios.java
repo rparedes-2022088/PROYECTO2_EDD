@@ -13,45 +13,22 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import modelo.Usuario;
 
-
 /**
  *
  * @author chris
  */
-@WebServlet(name = "ControladorLogin", urlPatterns = {"/ControladorLogin"})
-public class ControladorLogin extends HttpServlet {
+@WebServlet(name = "ControladorEliminarUsuarios", urlPatterns = {"/ControladorEliminarUsuarios"})
+public class ControladorEliminarUsuarios extends HttpServlet {
 
-    @Override
-    protected void doPost(HttpServletRequest request,
-            HttpServletResponse response)
-            throws ServletException, IOException {
-        String correo = request.getParameter("correo");
-        String pass = request.getParameter("password");
-        
-        Usuario usuario = new Usuario();
-        Usuario usuarioValidado = usuario.login(correo, pass);
-         
-         if(usuarioValidado != null){
-             request.getSession().setAttribute("usuarioSesion", usuarioValidado);
-         
-            String nombreRol = usuarioValidado.getRol().getNombreRol();
-
-            if(nombreRol.equalsIgnoreCase("admin")){
-                response.sendRedirect("adminInicio.jsp");
-            }
-            else if(nombreRol.equalsIgnoreCase("repartidor")){
-                response.sendRedirect("repartidorInicio.jsp");
-            }
-            else{
-               response.sendRedirect("clientesInicio.jsp");
-           }
-         }
-         else{
-            response.sendRedirect("login.jsp?error=invalid");
-        }
-    }
-    
-    
+    /**
+     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
+     * methods.
+     *
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
@@ -60,10 +37,10 @@ public class ControladorLogin extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet ControladorLogin</title>");
+            out.println("<title>Servlet ControladorEliminarUsuarios</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet ControladorLogin at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet ControladorEliminarUsuarios at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -81,7 +58,32 @@ public class ControladorLogin extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        
+        int idUsuario =
+                Integer.parseInt(
+                        request.getParameter("id"));
+
+        Usuario usuario = new Usuario();
+
+        boolean eliminado =
+                usuario.eliminarUsuario(idUsuario);
+
+        if(eliminado){
+
+            System.out.println(
+                    "Usuario eliminado");
+
+            response.sendRedirect(
+                    "ControladorAdminUsuarios");
+        }
+        else{
+
+            System.out.println(
+                    "No se pudo eliminar");
+
+            response.sendRedirect(
+                    "ControladorAdminUsuarios");
+        }
     }
 
     /**
@@ -92,6 +94,11 @@ public class ControladorLogin extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        processRequest(request, response);
+    }
 
     /**
      * Returns a short description of the servlet.

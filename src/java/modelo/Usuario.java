@@ -11,6 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Logger;
 import java.util.logging.Level;
+import java.sql.PreparedStatement;
 
 /**
  *
@@ -154,10 +155,11 @@ public class Usuario {
         return usuario; //Devuelve el usuario lleno o null si no existe
     }
     
-    public boolean registrarUsuario(Usuario usuario){
+    public int registrarUsuario(Usuario usuario){
         String consulta;
         ConexionBDD conexion = new ConexionBDD();
-        boolean exito = false;
+        int idGenerado = 0;
+        
         consulta = "INSERT INTO usuarios(nombre, apellido, correo, pass, telefono, direccion, fecha_registro, id_rol)"
                 + " VALUES('"
                 + usuario.getNombre() + "', '"
@@ -175,12 +177,8 @@ public class Usuario {
             int filas = cn.executeUpdate(consulta);
             if(filas > 0){
                 System.out.println("Usuario agregado exitosamente");
-                int idGenerado = obtenerUltimoId();
-                usuario.setIdUsuario(idGenerado);
-                int posicionHash = calcularHash(usuario.getCorreo());
-                insertarHash(posicionHash, idGenerado);
-                insertarArbol(idGenerado, idGenerado);
-                exito = true;
+                idGenerado = obtenerUltimoId();
+                
             } else {
                 System.out.println("Usuario no agregado");
             }
@@ -189,7 +187,7 @@ public class Usuario {
                     .log(Level.SEVERE, null, ex);
         }
 
-        return exito;
+        return idGenerado;
     }
     
     public int calcularHash(String correo){
@@ -204,56 +202,48 @@ public class Usuario {
         return suma % 10;
     }
     
-    public void insertarHash(int posicionHash, int idUsuario){
-
-        String consulta;
+    public java.util.ArrayList<Usuario> obtenerTodos() {
+        java.util.ArrayList<Usuario> lista = new java.util.ArrayList<>();
+        String consulta = "SELECT u.*, r.nombre_rol " +
+                          "FROM usuarios u " +
+                          "INNER JOIN rol r ON u.id_rol = r.id_rol";
 
         ConexionBDD conexion = new ConexionBDD();
-
-        consulta = "INSERT INTO hash_table(posicion_hash, id_usuario) "
-                + "VALUES(" + posicionHash + ", " + idUsuario + ")";
-
         Connection con = conexion.conectar();
 
         try {
-
             Statement cn = con.createStatement();
+            ResultSet rs = cn.executeQuery(consulta);
 
-            cn.executeUpdate(consulta);
+            while (rs.next()) {
+                Usuario usuario = new Usuario();
+                usuario.setIdUsuario(rs.getInt("id_usuario"));
+                usuario.setNombre(rs.getString("nombre"));
+                usuario.setApellido(rs.getString("apellido"));
+                usuario.setCorreo(rs.getString("correo"));
+                usuario.setPass(rs.getString("pass"));
+                usuario.setTelefono(rs.getString("telefono"));
+                usuario.setDireccion(rs.getString("direccion"));
+                usuario.setFechaRegistro(rs.getDate("fecha_registro"));
 
-            System.out.println("Insertado en hash");
+                // Reconstruimos el objeto Rol que lleva dentro el usuario
+                Rol rol = new Rol();
+                rol.setIdRol(rs.getInt("id_rol"));
+                rol.setNombreRol(rs.getString("nombre_rol"));
+                usuario.setRol(rol);
+
+                // Lo agregamos a la lista temporal
+                lista.add(usuario);
+            }
+            System.out.println("Se extrajeron " + lista.size() + " usuarios de Oracle.");
 
         } catch (SQLException ex) {
-
-            Logger.getLogger(Usuario.class.getName())
-                    .log(Level.SEVERE, null, ex);
+            Logger.getLogger(Usuario.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try { if (con != null) con.close(); } catch (SQLException e) {}
         }
-    }
-    
-    public void insertarArbol(int claveArbol, int idUsuario){
 
-        String consulta;
-
-        ConexionBDD conexion = new ConexionBDD();
-
-        consulta = "INSERT INTO arbol_binario(clave_arbol, id_usuario) "
-                + "VALUES(" + claveArbol + ", " + idUsuario + ")";
-
-        Connection con = conexion.conectar();
-
-        try {
-
-            Statement cn = con.createStatement();
-
-            cn.executeUpdate(consulta);
-
-            System.out.println("Insertado en árbol");
-
-        } catch (SQLException ex) {
-
-            Logger.getLogger(Usuario.class.getName())
-                    .log(Level.SEVERE, null, ex);
-        }
+        return lista;
     }
     
     public int obtenerUltimoId(){
@@ -284,5 +274,47 @@ public class Usuario {
         }
 
         return 0;
+    }
+    
+    public boolean eliminarUsuario(int idUsuario){
+
+        String consulta =
+                "DELETE FROM usuarios WHERE id_usuario = ?";
+
+        ConexionBDD conexion = new ConexionBDD();
+
+        Connection con = conexion.conectar();
+
+        try{
+
+            PreparedStatement ps =
+                    con.prepareStatement(consulta);
+
+            ps.setInt(1, idUsuario);
+
+            int filas = ps.executeUpdate();
+
+            return filas > 0;
+        }
+        catch(Exception e){
+
+            e.printStackTrace();
+        }
+        finally{
+
+            try{
+
+                if(con != null){
+
+                    con.close();
+                }
+
+            }
+            catch(Exception e){
+
+            }
+        }
+
+        return false;
     }
 }
